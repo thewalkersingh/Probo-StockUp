@@ -6,19 +6,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class TradeTime {
 	@Autowired
-	private Market market;
+	private StockMarket stockMarket;
 	@Autowired
-	private MyBots myBots;
+	private MyStockBots myStockBots;
 	
 	// we will run this method every 5 seconds
 	@Scheduled(fixedRate = 5000)
 	public void currentStatus() {
-		double stockPrice = market.getCurrentPrice();
+		double stockPrice = stockMarket.getCurrentPrice();
 		System.out.println("Current Stock Price: " + stockPrice);
-		myBots.updateStockPrice(stockPrice);
+		myStockBots.updateStockPrice(stockPrice);
 		
 		// Output current balance and profit/loss after each run
-		System.out.println("Current Balance: " + myBots.getBalance());
-		System.out.println("Current Profit/Loss: " + myBots.getProfitLoss());
+		System.out.println("Current Balance: " + myStockBots.getBalance());
+		System.out.println("Current Profit/Loss: " + myStockBots.getProfitLoss());
 	}
 }

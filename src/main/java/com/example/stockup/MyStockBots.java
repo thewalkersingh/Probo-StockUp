@@ -1,9 +1,10 @@
 package com.example.stockup;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MyBots {
+public class MyStockBots {
 	private final double initialBalance = 10000; // Initial amount in hand
 	private final double bestBuyPercent = 0.02; // taking 2% drop to buy
 	private final double bestSellPercent = 0.03; // 3% rise to sell
@@ -12,17 +13,23 @@ public class MyBots {
 	private boolean stockHolding = false;
 	private double purchasePrice;
 	private double profitOrLoss = 0;
+	@Autowired
+	private StockReport stockReport;
 	
-	public MyBots() {
+	public MyStockBots() {
 		this.balance = initialBalance;
 	}
 	
 	public void updateStockPrice(double stockPrice) {
-		if (!stockHolding && OurBuyTime(stockPrice)) {
-			buyStock(stockPrice);
-		}
-		else if (stockHolding && OurSellTime(stockPrice)) {
-			sellStock(stockPrice);
+		try {
+			if (!stockHolding && OurBuyTime(stockPrice)) {
+				buyStock(stockPrice);
+			}
+			else if (stockHolding && OurSellTime(stockPrice)) {
+				sellStock(stockPrice);
+			}
+		} catch (Exception e) {
+			System.out.println("Error in Trading " + e.getMessage());
 		}
 	}
 	
@@ -37,6 +44,7 @@ public class MyBots {
 	private void buyStock(double stockPrice) {
 		purchasePrice = stockPrice;
 		stockHolding = true;
+		stockReport.addTrade("Bought stock at: " + stockPrice);
 		System.out.println("Bought stock at: " + stockPrice);
 	}
 	
@@ -45,6 +53,7 @@ public class MyBots {
 		profitOrLoss += profit;
 		balance += profit;
 		stockHolding = false;
+		stockReport.addTrade("Sold stock at: " + stockPrice + ", Profit: " + profit);
 		System.out.println("Sold stock at: " + stockPrice + ", Profit: " + profit);
 	}
 	
