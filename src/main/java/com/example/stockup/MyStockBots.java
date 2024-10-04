@@ -13,6 +13,7 @@ public class MyStockBots {
 	private boolean stockHolding = false;
 	private double purchasePrice;
 	private double profitOrLoss = 0;
+	private int sharesHeld = 0;
 	@Autowired
 	private StockReport stockReport;
 	
@@ -34,25 +35,29 @@ public class MyStockBots {
 	}
 	
 	private boolean OurBuyTime(double stockPrice) {
-		return (purchasePrice - stockPrice)/purchasePrice >= bestBuyPercent;
+		return !stockHolding &&
+		       (purchasePrice == 0 || (purchasePrice - stockPrice)/purchasePrice >= bestBuyPercent);
 	}
 	
 	private boolean OurSellTime(double stockPrice) {
-		return (stockPrice - purchasePrice)/purchasePrice >= bestSellPercent;
+		return stockHolding && (stockPrice - purchasePrice)/purchasePrice >= bestSellPercent;
 	}
 	
 	private void buyStock(double stockPrice) {
+		sharesHeld = (int) (balance/stockPrice);
 		purchasePrice = stockPrice;
+		balance -= sharesHeld*stockPrice;
 		stockHolding = true;
 		stockReport.addTrade("Bought stock at: " + stockPrice);
 		System.out.println("Bought stock at: " + stockPrice);
 	}
 	
 	private void sellStock(double stockPrice) {
-		double profit = stockPrice - purchasePrice;
+		double profit = (stockPrice - purchasePrice)*sharesHeld;
 		profitOrLoss += profit;
-		balance += profit;
+		balance += sharesHeld*stockPrice;
 		stockHolding = false;
+		sharesHeld = 0;
 		stockReport.addTrade("Sold stock at: " + stockPrice + ", Profit: " + profit);
 		System.out.println("Sold stock at: " + stockPrice + ", Profit: " + profit);
 	}

@@ -17,12 +17,13 @@ public class StockUpApplication {
 			StockMarket stockMarket = appContext.getBean(StockMarket.class);
 			MyStockBots myStockBots = appContext.getBean(MyStockBots.class);
 			StockReport stockReport = appContext.getBean(StockReport.class);
+			double[] stockPrices = {101, 99, 98, 97, 102, 105, 106, 108, 107, 104};
 			for (int i = 0; i < 10; i++) {
 				double stockPrice = stockMarket.getCurrentPrice();
 				System.out.println("Current Stock Price: " + stockPrice);
 				myStockBots.updateStockPrice(stockPrice);
 				
-				Thread.sleep(1000);
+				Thread.sleep(500);
 			}
 			stockReport.printTradeHistory();
 			System.out.println("Final Balance: " + myStockBots.getBalance());
