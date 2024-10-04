@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import java.util.Random;
 
 @Service
-public class MarketService {
+public class Market {
 	private final Random rand = new Random();
 	// initial price for any stock
 	private double currentPrice = 100.0;
